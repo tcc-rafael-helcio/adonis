@@ -1,0 +1,204 @@
+{
+  "layout": {
+    "title": "Settings",
+    "description": "Manage your profile and account settings",
+    "profile": "Profile",
+    "password": "Password",
+    "tokens": "Tokens"
+  },
+  "index": {
+    "page": {
+      "title": "Users",
+      "description": "Manage the users of your application",
+      "breadcrumbs": {
+        "users": "Users"
+      }
+    },
+    "table": {
+      "columns": {
+        "full_name": "Full Name",
+        "email": "Email",
+        "role": "Role"
+      },
+      "filters": {
+        "search_placeholder": "Search...",
+        "role": "Role",
+        "clear_filters": "Clear filters",
+        "no_results": "No results found."
+      },
+      "row_actions": {
+        "impersonate": "Impersonate",
+        "edit": "Edit",
+        "delete": "Delete",
+        "open_menu": "Open menu",
+        "clear": "Clear"
+      },
+      "not_provided": "Not provided"
+    },
+    "toolbar": {
+      "invite": "Invite",
+      "add": "Add"
+    }
+  },
+  "password": {
+    "breadcrumbs": {
+      "settings": "Settings"
+    },
+    "title": "Update Password",
+    "description": "Make sure your account is using a long, random password to stay secure"
+  },
+  "profile": {
+    "breadcrumbs": {
+      "settings": "Settings"
+    },
+    "title": "Profile Information",
+    "description": "Update your name and email address"
+  },
+  "tokens": {
+    "breadcrumbs": {
+      "settings": "Settings"
+    },
+    "title": "Tokens",
+    "description": "Manage your API tokens here.",
+    "dialogs": {
+      "add": {
+        "title": "Add Token",
+        "description": "Fill in the details below to add a new token. Click save when you're done."
+      },
+      "generated": {
+        "title": "Token Generated",
+        "description": "You can now use the generated token to authenticate API requests. Make sure to store it securely, as it will not be shown again."
+      }
+    }
+  },
+  "action": {
+    "create": {
+      "title": "Create User",
+      "description": "Fill in the details below to add a new user. Click add when you're done."
+    },
+    "edit": {
+      "title": "Edit User",
+      "description": "Update the user here. Click save when you're done."
+    },
+    "form": {
+      "full_name": {
+        "label": "Full Name",
+        "placeholder": "Enter user's full name"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter the user's email"
+      },
+      "role": {
+        "label": "Role",
+        "placeholder": "Select a role"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "e.g., S3cur3P@ssw0rd"
+      },
+      "password_confirmation": {
+        "label": "Confirm Password",
+        "placeholder": "e.g., S3cur3P@ssw0rd"
+      },
+      "token": {
+        "label": "Token name",
+        "placeholder": "Enter token name"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "add": "Add",
+      "save": "Save",
+      "close": "Close",
+      "change_avatar": "Change avatar"
+    },
+    "toast": {
+      "title": "You submitted the following values:",
+      "type_success": "Success",
+      "settings_updated": "{setting} updated successfully"
+    }
+  },
+  "delete": {
+    "title": "Delete User",
+    "description": "Are you sure you want to delete <strong1>{{email}}</strong1>? This action will permanently remove the user with the role of <strong2>{{role}}</strong2> from the system. This cannot be undone.",
+    "confirm_placeholder": "Enter email to confirm deletion.",
+    "confirm_button": "Delete",
+    "alert": {
+      "title": "Warning!",
+      "description": "Please be carefull, this operation can not be rolled back."
+    },
+    "toast": {
+      "title": "The following user has been deleted:"
+    }
+  },
+  "delete_token": {
+    "title": "Delete Token",
+    "description": "Are you sure you want to delete <strong1>{{token_name}}</strong1>? This action will permanently remove the token from the system. This cannot be undone.",
+    "confirm_placeholder": "Enter the token name to confirm deletion.",
+    "confirm_button": "Delete",
+    "alert": {
+      "title": "Warning!",
+      "description": "Please be carefull, this operation can not be rolled back."
+    },
+    "toast": {
+      "title": "The following token has been deleted:"
+    }
+  },
+  "impersonate": {
+    "title": "Impersonate User",
+    "description": "Are you sure you want to impersonate <strong1>{{email}}</strong1>? This action will allow you to act as this user (Role: <strong2>{{role}}</strong2>) in the system.",
+    "confirm_button": "Impersonate",
+    "alert": {
+      "title": "Note",
+      "description": "You can revert to your original account at any time by logging out."
+    },
+    "toast": {
+      "title": "You are now impersonating the following user:"
+    }
+  },
+  "invite": {
+    "title": "Invite User",
+    "description": "Invite new user to join your team by sending them an email invitation. Assign a role to define their access level.",
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter the user's email"
+      },
+      "role": {
+        "label": "Role",
+        "placeholder": "Select a role"
+      },
+      "description": {
+        "label": "Description (optional)",
+        "placeholder": "Add a personal note to your invitation (optional)"
+      }
+    },
+    "actions": {
+      "cancel": "Cancel",
+      "submit": "Send Invitation"
+    },
+    "toast": {
+      "title": "You submitted the following values:"
+    }
+  },
+  "emails": {
+    "welcome": {
+      "subject": "Welcome!",
+      "title": "Welcome {full_name}!",
+      "subtitle": "We're thrilled to have you on board.",
+      "action_btn": "Get Started",
+      "default_message": "Thank you for joining our community. Explore our features and start your journey with us. If you have any questions, feel free to reach out!"
+    }
+  },
+  "roles": {
+    "1":{
+      "name": "User",
+      "description": "Authenticated User"
+    },
+    "2":{
+      "name": "Administrator",
+      "description": "Super User"
+    }
+  }
+}

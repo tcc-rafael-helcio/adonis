@@ -1,0 +1,12 @@
+{
+  "name": "@workspace/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "PROPRIETARY",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@adonisjs/tsconfig": "^1.4.1"
+  }
+}
