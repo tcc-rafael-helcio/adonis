@@ -1,16 +1,14 @@
-/// <reference path="../../../../adonisrc.ts" />
-/// <reference path="../../../../config/inertia.ts" />
-
-import '../css/app.css'
-import { createRoot, hydrateRoot } from 'react-dom/client'
-import { createInertiaApp } from '@inertiajs/react'
 import { resolvePageComponent } from '@adonisjs/inertia/helpers'
-import { TuyauProvider } from '@tuyau/inertia/react'
-import { tuyau } from './tuyau'
+import { TuyauProvider } from '@adonisjs/inertia/react'
+import { createInertiaApp } from '@inertiajs/react'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { TooltipProvider } from '@workspace/ui/components/tooltip'
+import '../css/app.css'
+import { client } from './client'
 
 import { isSSREnableForPage } from 'config/ssr'
-import { setupI18n } from '../config/i18n.config'
 import { I18nextProvider } from 'react-i18next'
+import { setupI18n } from '../config/i18n.config'
 
 const appName = import.meta.env.VITE_APP_NAME || 'AdonisJS Starter Kit'
 
@@ -33,27 +31,34 @@ createInertiaApp({
     const isSSREnabled = isSSREnableForPage(componentName)
 
     const { locale, fallbackLocale } = props.initialPage.props as unknown as {
-      locale: string
+      locale?: string
       fallbackLocale?: string
     }
 
-    const i18nInstance = setupI18n({ locale, fallbackLocale })
+    const i18nInstance = setupI18n({
+      locale: locale ?? 'en',
+      fallbackLocale: fallbackLocale ?? 'en',
+    })
 
     if (isSSREnabled) {
       hydrateRoot(
         el,
         <I18nextProvider i18n={i18nInstance}>
-          <TuyauProvider client={tuyau}>
-            <App {...props} />
-          </TuyauProvider>
+          <TooltipProvider>
+            <TuyauProvider client={client}>
+              <App {...props} />
+            </TuyauProvider>
+          </TooltipProvider>
         </I18nextProvider>
       )
     } else {
       createRoot(el).render(
         <I18nextProvider i18n={i18nInstance}>
-          <TuyauProvider client={tuyau}>
-            <App {...props} />
-          </TuyauProvider>
+          <TooltipProvider>
+            <TuyauProvider client={client}>
+              <App {...props} />
+            </TuyauProvider>
+          </TooltipProvider>
         </I18nextProvider>
       )
     }

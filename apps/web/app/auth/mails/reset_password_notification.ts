@@ -1,9 +1,9 @@
 import { BaseMail } from '@adonisjs/mail'
 import env from '#start/env'
-import router from '@adonisjs/core/services/router'
+import { signedUrlFor } from '@adonisjs/core/services/url_builder'
 
-import User from '#users/models/user'
-import { MailBasicTranslation } from '#common/models/mail_basic_translation'
+import type User from '#users/models/user'
+import { type MailBasicTranslation } from '#common/models/mail_basic_translation'
 
 export default class ResetPasswordNotification extends BaseMail {
   from = env.get('EMAIL_FROM')
@@ -26,10 +26,10 @@ export default class ResetPasswordNotification extends BaseMail {
      * Generate a signed URL with the user's email,
      * which can be used to reset the password.
      */
-    const signedUrl = router.makeSignedUrl(
+    const signedUrl = signedUrlFor(
       'auth.reset_password.show',
       { token: this.token },
-      { expiresIn: '30m', prefixUrl: env.get('VITE_API_URL'), purpose: 'reset_password' }
+      { expiresIn: '30m', prefixUrl: env.get('APP_URL'), purpose: 'reset_password' }
     )
 
     const { subject, title, subtitle, actionBtn, defaultMessage } = this.translations

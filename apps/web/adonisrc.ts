@@ -1,6 +1,21 @@
+import { indexAppUiPages } from '#core/hooks/index_pages_hook'
+import { indexEntities } from '@adonisjs/core'
 import { defineConfig } from '@adonisjs/core/app'
+import { generateRegistry } from '@tuyau/core/hooks'
 
 export default defineConfig({
+  /*
+  |--------------------------------------------------------------------------
+  | Experimental flags
+  |--------------------------------------------------------------------------
+  |
+  | The following features will be enabled by default in the next major release
+  | of AdonisJS. You can opt into them today to avoid any breaking changes
+  | during upgrade.
+  |
+  */
+  experimental: {},
+
   /*
   |--------------------------------------------------------------------------
   | Commands
@@ -13,12 +28,10 @@ export default defineConfig({
   commands: [
     () => import('@adonisjs/core/commands'),
     () => import('@adonisjs/lucid/commands'),
-    () => import('@adocasts.com/dto/commands'),
     () => import('@adonisjs/mail/commands'),
     () => import('@adonisjs/bouncer/commands'),
     () => import('@jrmc/adonis-attachment/commands'),
     () => import('@tuyau/core/commands'),
-    () => import('@adonisjs-community/modules/commands'),
   ],
 
   /*
@@ -52,7 +65,6 @@ export default defineConfig({
     () => import('@adonisjs/ally/ally_provider'),
     () => import('@jrmc/adonis-attachment/attachment_provider'),
     () => import('@adonisjs/drive/drive_provider'),
-    () => import('@tuyau/core/tuyau_provider'),
     () => import('@adonisjs/i18n/i18n_provider'),
     () => import('@adonisjs/limiter/limiter_provider'),
   ],
@@ -97,12 +109,12 @@ export default defineConfig({
   tests: {
     suites: [
       {
-        files: ['tests/unit/**/*.spec(.ts|.js)'],
+        files: ['tests/unit/**/*.spec.{ts,js}'],
         name: 'unit',
         timeout: 2000,
       },
       {
-        files: ['tests/functional/**/*.spec(.ts|.js)'],
+        files: ['tests/functional/**/*.spec.{ts,js}'],
         name: 'functional',
         timeout: 30000,
       },
@@ -134,8 +146,27 @@ export default defineConfig({
     },
   ],
 
-  assetsBundler: false,
   hooks: {
-    onBuildStarting: [() => import('@adonisjs/vite/build_hook')],
+    init: [
+      indexEntities({
+        transformers: {
+          enabled: true,
+          source: './app',
+          glob: ['**/*_transformer.ts'],
+          importAlias: '#app',
+          withSharedProps: true,
+          inertiaMiddlewareImportPath: '#core/middleware/inertia_middleware',
+        },
+        controllers: {
+          enabled: true,
+          source: './app',
+          glob: ['**/*_controller.ts'],
+          importAlias: '#app',
+        },
+      }),
+      indexAppUiPages(),
+      generateRegistry(),
+    ],
+    buildStarting: [() => import('@adonisjs/vite/build_hook')],
   },
 })

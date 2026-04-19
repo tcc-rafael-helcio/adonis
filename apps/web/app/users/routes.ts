@@ -22,10 +22,14 @@ router
   .use('*', middleware.auth())
   .as('users')
 
-router.post('/users/invite', [InviteController]).middleware(middleware.auth())
+router
+  .post('/users/invite', [InviteController])
+  .middleware(middleware.auth())
+  .as('users.invite.handle')
 router
   .post('/users/impersonate/:id', [ImpersonatesController, 'store'])
   .middleware(middleware.auth())
+  .as('users.impersonate.handle')
 
 router
   .get('/settings', ({ response }) => {
@@ -34,7 +38,10 @@ router
   .middleware(middleware.auth())
   .as('settings.index')
 
-router.put('/settings/profile', [ProfileController]).middleware(middleware.auth())
+router
+  .put('/settings/profile', [ProfileController])
+  .middleware(middleware.auth())
+  .as('profile.update')
 router
   .get('/settings/profile', [ProfileController, 'show'])
   .middleware(middleware.auth())
@@ -46,16 +53,22 @@ router
   .middleware('*', middleware.auth())
   .as('tokens')
 
-router.post('/api/tokens', [TokensController, 'store']).middleware(middleware.auth())
+router
+  .post('/api/tokens', [TokensController, 'store'])
+  .middleware(middleware.auth())
+  .as('tokens.store')
 
-router.put('/settings/password', [PasswordController]).middleware(middleware.auth())
+router
+  .put('/settings/password', [PasswordController])
+  .middleware(middleware.auth())
+  .as('password.update')
 router
   .get('/settings/password', [PasswordController, 'show'])
   .middleware(middleware.auth())
   .as('password.show')
 router
   .get('/settings/appearance', ({ inertia }) => {
-    return inertia.render('users/appearance')
+    return inertia.render('users/appearance', {})
   })
   .middleware(middleware.auth())
   .as('appearance.show')

@@ -1,22 +1,22 @@
-import { useState } from 'react'
 import { useForm } from '@inertiajs/react'
+import { useState } from 'react'
 import { Trans } from 'react-i18next'
 
-import { AlertTriangleIcon } from 'lucide-react'
-import { toast } from '@workspace/ui/hooks/use-toast'
+import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert'
 import { Input } from '@workspace/ui/components/input'
-
-import type TokenDto from '#users/dtos/token'
-
-import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
+import { toast } from '@workspace/ui/hooks/use-toast'
+import { AlertTriangleIcon } from 'lucide-react'
 
 import { useTranslation } from '#common/ui/hooks/use_translation'
+import { urlFor } from '~/app/client'
+
+import type { Data } from '@generated/data'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: TokenDto
+  currentRow: Data.Users.Token
 }
 
 export function TokensDeleteDialog({ open, onOpenChange, currentRow }: Props) {
@@ -27,18 +27,12 @@ export function TokensDeleteDialog({ open, onOpenChange, currentRow }: Props) {
   const handleDelete = () => {
     if (value.trim() !== currentRow.name) return
 
-    destroy(`/settings/tokens/${currentRow?.id}`, {
+    destroy(urlFor('tokens.destroy', { id: currentRow.id }), {
       preserveScroll: true,
       onSuccess: () => {
         onOpenChange(false)
         toast(t('users.delete_token.toast.title'), {
-          description: (
-            <div className="mt-2 max-w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4">
-              <pre className="text-white whitespace-pre-wrap break-words">
-                <code>{JSON.stringify(currentRow, null, 2)}</code>
-              </pre>
-            </div>
-          ),
+          description: currentRow.name,
         })
       },
     })

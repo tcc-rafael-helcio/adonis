@@ -11,7 +11,7 @@ export const createUserValidator = vine.compile(
     roleId: vine.number().exists({ table: 'roles', column: 'id' }),
     password: vine
       .string()
-      .minLength(1)
+      .minLength(8)
       .maxLength(255)
       .confirmed({ confirmationField: 'passwordConfirmation' })
       .optional(),
@@ -24,7 +24,7 @@ export const updateProfileValidator = vine.compile(
     avatar: vine
       .file({
         extnames: ['png', 'jpg', 'jpeg', 'gif'],
-        size: 1 * 1024 * 1014,
+        size: 1 * 1024 * 1024,
       })
       .nullable(),
   })
@@ -55,7 +55,7 @@ export const updatePasswordValidator = vine.compile(
   vine.object({
     password: vine
       .string()
-      .minLength(1)
+      .minLength(8)
       .maxLength(255)
       .confirmed({ confirmationField: 'passwordConfirmation' }),
   })
@@ -79,7 +79,7 @@ export const editUserValidator = vine.withMetaData<{ userId: number }>().compile
     roleId: vine.number().exists({ table: 'roles', column: 'id' }),
     password: vine
       .string()
-      .minLength(1)
+      .minLength(8)
       .maxLength(255)
       .confirmed({ confirmationField: 'passwordConfirmation' })
       .optional(),

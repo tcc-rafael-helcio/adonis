@@ -1,9 +1,9 @@
 import type { HttpContext } from '@adonisjs/core/http'
-import { cuid } from '@adonisjs/core/helpers'
+import { randomUUID } from 'node:crypto'
 
 import User from '#users/models/user'
 
-import UserDto from '#users/dtos/user'
+import UserTransformer from '#users/transformers/user_transformer'
 
 import UserPolicy from '#users/policies/user_policy'
 
@@ -36,10 +36,12 @@ export default class UsersController {
 
     const users = await query.preload('role').paginate(page, limit)
 
-    await User.preComputeUrls(users)
+    const usersData = users.all()
+
+    await User.preComputeUrls(usersData)
 
     return inertia.render('users/index', {
-      users: UserDto.fromPaginator(users),
+      users: UserTransformer.paginate(usersData, users.getMeta()),
       q: querySearch,
       selectedRoles: roleIds,
     })
@@ -53,7 +55,7 @@ export default class UsersController {
     const user = new User()
     user.merge({
       ...payload,
-      password: payload.password ? payload.password : cuid(),
+      password: payload.password ? payload.password : randomUUID(),
     })
 
     await user.save()

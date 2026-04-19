@@ -1,6 +1,6 @@
 # AdonisJS Starter Kit
 
-AdonisJS Starter Kit is a robust, monorepo-based template for developing full-stack applications with AdonisJS. Leveraging modern tools such as TurboRepo, pnpm, ShadCN, Inertia.js, Tailwind CSS, and PostgreSQL, this starter kit streamlines your development process and enables you to rapidly bootstrap your projects.
+AdonisJS Starter Kit is a monorepo-based template for developing full-stack applications with AdonisJS. It combines AdonisJS, Inertia.js, Tuyau, a shared UI package based on shadcn/ui, Tailwind CSS, and PostgreSQL to help you bootstrap production-ready applications faster.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/filipebraida/adonisjs-starter-kit/main/.github/demo.gif" alt="Demo" width="600" />
@@ -9,8 +9,9 @@ AdonisJS Starter Kit is a robust, monorepo-based template for developing full-st
 ## Features
 
 - **Monorepo Setup**: Efficient package management and build processes powered by TurboRepo and pnpm.
-- **UI Framework**: Reusable and customizable components provided by ShadCN.
+- **Shared UI Package**: Reusable and customizable components provided by `@workspace/ui`, built on top of shadcn/ui.
 - **Frontend Integration**: Inertia.js delivers a modern single-page application (SPA) experience.
+- **Type-safe Routing & API Client**: Tuyau provides route-aware URLs and type-safe client calls.
 - **Styling**: Rapid and responsive UI development using Tailwind CSS.
 - **Database**: PostgreSQL ensures robust, scalable, and high-performance data storage.
 - **User Management**: Comprehensive user management system.
@@ -26,12 +27,18 @@ AdonisJS Starter Kit is a robust, monorepo-based template for developing full-st
 
 - **TurboRepo**: Monorepo management and build caching.
 - **pnpm**: Fast and efficient package management.
-- **ShadCN**: Modern UI component library.
+- **shadcn/ui**: Baseline for the shared UI package.
 - **Inertia.js**: Seamless integration between frontend and backend.
+- **Tuyau**: Type-safe route generation and API client integration.
 - **Tailwind CSS**: Utility-first CSS framework for rapid styling.
 - **PostgreSQL**: Reliable and high-performance relational database.
 - **Mailpit**: Small, fast, low memory, zero-dependency, multi-platform email testing tool & API for developers.
 - **PgAdmin**: Most popular and feature rich Open Source administration and development platform for PostgreSQL.
+
+## Requirements
+
+- Node.js `>=24`
+- pnpm `10.33.0` — install with `npm install -g pnpm@10.33.0`
 
 ## Installation
 
@@ -43,6 +50,14 @@ To create a new project using this starter kit, run:
 pnpm create adonisjs@latest -K="filipebraida/adonisjs-starter-kit"
 ```
 
+Or, if cloning directly:
+
+```bash
+git clone https://github.com/filipebraida/adonisjs-starter-kit.git
+cd adonisjs-starter-kit
+pnpm install
+```
+
 ### Setting Up the Environment
 
 1. **Copy the Example Environment File**  
@@ -51,6 +66,8 @@ pnpm create adonisjs@latest -K="filipebraida/adonisjs-starter-kit"
 ```bash
 cp apps/web/.env.example apps/web/.env
 ```
+
+> **Note:** Some features (email, social auth, file storage) are optional but their environment variables must still be present with placeholder values due to startup validation. The `.env.example` file already includes all required placeholders.
 
 2. **Generate the App Key**  
    Generate a cryptographically secure key and assign it to the `APP_KEY` environment variable.
@@ -111,85 +128,53 @@ This command launches the AdonisJS server along with any associated applications
 This project follows a monorepo architecture using **TurboRepo**. Here's a quick breakdown of the structure:
 
 - **apps/** contains runnable applications. In this case, `web/` is the full-stack AdonisJS application, including both backend and frontend (via Inertia.js).
-- **packages/** holds shared libraries, components, or utilities that can be reused across apps.
+- **packages/** holds shared libraries and tooling, such as the shared UI package and shared lint/type configurations.
 - **pnpm-workspace.yaml** defines the workspace boundaries.
 - **turbo.json** configures TurboRepo pipelines for tasks like build, lint, test, and dev.
 
 This modular design allows you to isolate features, enforce code reuse, and scale your architecture with clarity. For example, you can add more apps in `apps/` or extract common logic into `packages/` as your project grows.
 
-## Modular Structure
+## Feature-based Organization
 
-This starter kit supports a modular architecture powered by [@adonisjs-community/modules](https://github.com/adonisjs-community/modules), allowing you to scaffold your application into feature-based subdirectories for better organization, maintainability, and scalability.
+The `apps/web` application follows a feature-based structure inside the `app/` directory. Instead of grouping files only by technical type, the codebase is organized by domain areas such as `auth`, `users`, `marketing`, `common`, and `core`.
 
-### Enabling Modules
+This approach keeps related controllers, validators, UI components, hooks, routes, and supporting files close to each other, which makes the project easier to navigate and scale over time.
 
-To get started, install the modules package:
-
-```bash
-node ace add @adonisjs-community/modules
-```
-
-### Creating a Module
-
-You can generate a new module using the following command:
+For example, a feature can look like this:
 
 ```bash
-node ace make:module users
+apps/web/app/
+├── auth/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── routes.ts
+│   └── ui/
+├── users/
+│   ├── controllers/
+│   ├── policies/
+│   ├── routes.ts
+│   ├── validators.ts
+│   └── ui/
 ```
 
-This creates a new module in the `app/` directory:
-
-```
-├── apps/
-│   └── web/
-│       └── app/
-│           └── users/
-│               ├── controllers/
-│               ├── models/
-│               ├── services/
-│               ├── validators/
-│               └── ...
-```
-
-Additionally, an alias will be added to `package.json` for module path resolution:
-
-```json
-{
-  "imports": {
-    "#users/*": "./app/users/*.js"
-  }
-}
-```
-
-### Generating Files Inside a Module
-
-After creating a module, you can use the standard AdonisJS `make` commands with the `--module` (`-m`) flag to generate scoped resources:
-
-```bash
-node ace make:controller profile -m=users
-node ace make:model user -m=users
-node ace make:validator create_user -m=users
-```
-
-This will generate the files inside the appropriate subfolders of the specified module.
-
-> 💡 Using modules makes your codebase easier to scale by grouping related files together, especially for large applications with many features.
+This structure is a project convention and does not depend on an external modules package.
 
 ## Adding a New Component
 
-To add a new UI component using ShadCN, execute:
+The shared UI package lives in `packages/ui` and uses `components.json` as the shadcn/ui source of truth.
+
+To add a new base component, run from the repository root:
 
 ```bash
-pnpm dlx shadcn@latest add button -c apps/web
+pnpm dlx shadcn@latest add button --cwd packages/ui
 ```
 
-Replace `button` with the name of the component you wish to add.
+This command updates files inside `packages/ui`. Custom project-specific components such as `field`, `password-input`, `copy-button`, and `data-table` are maintained manually on top of that base.
 
 ## Libraries Used
 
-This starter kit makes use of the following libraries to support modular design, file handling, SPA integration, and structured data flow. Refer to their documentation for more details:
+This starter kit makes use of the following libraries to support file handling, SPA integration, type-safe routing, and structured data flow. Refer to their documentation for more details:
 
-- [@adonisjs-community/modules](https://github.com/adonisjs-community/modules)
 - [@jrmc/adonis-attachment](https://github.com/batosai/adonis-attachment)
 - [@tuyau/inertia](https://github.com/Julien-R44/tuyau)
 - [@adocasts.com/dto](https://github.com/adocasts/package-dto)

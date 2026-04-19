@@ -1,9 +1,11 @@
-import React from 'react'
 import { useForm } from '@inertiajs/react'
+import React from 'react'
 
-import { MailPlus, Send } from 'lucide-react'
+import { useTranslation } from '#common/ui/hooks/use_translation'
+import { urlFor } from '~/app/client'
+import { Role } from '#users/ui/components/users_types'
+
 import { Button } from '@workspace/ui/components/button'
-import { Textarea } from '@workspace/ui/components/textarea'
 import {
   Dialog,
   DialogClose,
@@ -13,32 +15,31 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@workspace/ui/components/dialog'
-import { ScrollArea } from '@workspace/ui/components/scroll-area'
-import { Input } from '@workspace/ui/components/input'
 import { Field, FieldLabel } from '@workspace/ui/components/field'
+import { FieldErrorBag } from '@workspace/ui/components/field-error-bag'
+import { Input } from '@workspace/ui/components/input'
 import { Progress } from '@workspace/ui/components/progress'
-import { toast } from '@workspace/ui/hooks/use-toast'
-import { cn } from '@workspace/ui/lib/utils'
+import { ScrollArea } from '@workspace/ui/components/scroll-area'
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@workspace/ui/components/select'
-import { FieldErrorBag } from '@workspace/ui/components/field-error-bag'
+import { Textarea } from '@workspace/ui/components/textarea'
+import { toast } from '@workspace/ui/hooks/use-toast'
+import { cn } from '@workspace/ui/lib/utils'
+import { MailPlus, Send } from 'lucide-react'
 
-import { Role } from '#users/ui/components/users_types'
-import { useTranslation } from '#common/ui/hooks/use_translation'
-
-import type UserDto from '#users/dtos/user'
+import type { Data } from '@generated/data'
 
 import Roles from '#users/enums/role'
 
 interface Props {
   roles: Role[]
-  currentRow?: UserDto
+  currentRow?: Data.Users.User
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -59,9 +60,8 @@ export function UsersInviteDialog({ roles, open, onOpenChange }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    post('/users/invite', {
+    post(urlFor('users.invite.handle'), {
       preserveScroll: true,
-      preserveState: false,
       onSuccess: () => {
         onOpenChange(false)
         setTimeout(() => {
@@ -69,13 +69,7 @@ export function UsersInviteDialog({ roles, open, onOpenChange }: Props) {
           clearErrors()
         }, 500)
         toast(t('users.invite.toast.title'), {
-          description: (
-            <div className="mt-2 max-w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4">
-              <pre className="text-white whitespace-pre-wrap break-words">
-                <code>{JSON.stringify(data, null, 2)}</code>
-              </pre>
-            </div>
-          ),
+          description: data.email,
         })
       },
     })
@@ -86,10 +80,12 @@ export function UsersInviteDialog({ roles, open, onOpenChange }: Props) {
       open={open}
       onOpenChange={(state) => {
         onOpenChange(state)
-        setTimeout(() => {
-          reset()
-          clearErrors()
-        }, 500)
+        if (!state) {
+          setTimeout(() => {
+            reset()
+            clearErrors()
+          }, 500)
+        }
       }}
     >
       <DialogContent className="sm:max-w-md">

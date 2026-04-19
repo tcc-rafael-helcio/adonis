@@ -1,17 +1,19 @@
 import React from 'react'
 
-import { ToggleTheme } from '#common/ui/components/toggle_theme'
-import { getCookie } from '#common/ui/utils/cookie_helper'
-import { NavUser } from '#common/ui/components/nav_user'
 import { AppSidebar } from '#common/ui/components/app_sidebar'
 import Breadcrumb from '#common/ui/components/breadcrumbs'
+import { NavUser } from '#common/ui/components/nav_user'
+import { LanguageSwitcher } from '#common/ui/components/language_switcher'
+import { ToggleTheme } from '#common/ui/components/toggle_theme'
+import { getCookie } from '#common/ui/utils/cookie_helper'
 
 import type { NavMainItem, NavUserOptionsGroup } from '#common/ui/types/navigation'
 
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@workspace/ui/components/sidebar'
 
-import UserDto from '#users/dtos/user'
 import type { Collapsible, Variant } from '#common/ui/context/layout_provider'
+
+import type { Data } from '@generated/data'
 
 interface BreadcrumbItemProps {
   label: string
@@ -22,7 +24,7 @@ interface AppLayoutProps extends React.PropsWithChildren {
   breadcrumbs?: BreadcrumbItemProps[]
   navMain: NavMainItem[]
   navUser: NavUserOptionsGroup[]
-  user: UserDto
+  user: Data.Users.User
   variant?: Variant
   collapsible?: Collapsible
 }
@@ -51,6 +53,7 @@ export default function AppLayout({
 
           <div className="flex flex-row items-center gap-2 ml-auto">
             <ToggleTheme />
+            <LanguageSwitcher />
             <NavUser user={user} options={navUser} />
           </div>
         </header>

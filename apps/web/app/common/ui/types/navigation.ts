@@ -1,8 +1,8 @@
-import { Subjects } from '#users/ui/context/abilities_context'
+import { type Subjects } from '#users/ui/context/abilities_context'
 
-import { LucideIcon } from 'lucide-react'
+import { type LucideIcon } from 'lucide-react'
 
-import UserDto from '#users/dtos/user'
+import type { Data } from '@generated/data'
 
 interface ItemNav {
   title: string
@@ -33,9 +33,10 @@ export type NavUserOptionsGroup = {
   url: string
   icon: LucideIcon
   shortcut?: string
+  method?: 'get' | 'post'
 }[]
 
 export interface NavUserProps {
-  user: UserDto
+  user: Data.Users.User
   options: NavUserOptionsGroup[]
 }

@@ -1,8 +1,11 @@
-import React from 'react'
 import { useForm } from '@inertiajs/react'
+import React from 'react'
+
+import { useTranslation } from '#common/ui/hooks/use_translation'
+import { urlFor } from '~/app/client'
+import { Role } from '#users/ui/components/users_types'
 
 import { Button } from '@workspace/ui/components/button'
-import { PasswordInput } from '@workspace/ui/components/password-input'
 import {
   Dialog,
   DialogClose,
@@ -12,30 +15,29 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@workspace/ui/components/dialog'
-import { ScrollArea } from '@workspace/ui/components/scroll-area'
-import { Input } from '@workspace/ui/components/input'
 import { Field, FieldLabel } from '@workspace/ui/components/field'
+import { FieldErrorBag } from '@workspace/ui/components/field-error-bag'
+import { Input } from '@workspace/ui/components/input'
+import { PasswordInput } from '@workspace/ui/components/password-input'
 import { Progress } from '@workspace/ui/components/progress'
-import { toast } from '@workspace/ui/hooks/use-toast'
+import { ScrollArea } from '@workspace/ui/components/scroll-area'
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from '@workspace/ui/components/select'
-import { FieldErrorBag } from '@workspace/ui/components/field-error-bag'
-import { useTranslation } from '#common/ui/hooks/use_translation'
-import { Role } from '#users/ui/components/users_types'
+import { toast } from '@workspace/ui/hooks/use-toast'
 
-import type UserDto from '#users/dtos/user'
+import type { Data } from '@generated/data'
 
 import Roles from '#users/enums/role'
 
 interface Props {
   roles: Role[]
-  currentRow?: UserDto
+  currentRow?: Data.Users.User
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -56,12 +58,11 @@ export function UsersActionDialog({ roles, currentRow, open, onOpenChange }: Pro
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
-    const url = isEdit ? `/users/${currentRow?.id}` : '/users'
+    const url = isEdit ? urlFor('users.update', { id: currentRow!.id }) : urlFor('users.store')
     const method = isEdit ? put : post
 
     method(url, {
       preserveScroll: true,
-      preserveState: false,
       onSuccess: () => {
         onOpenChange(false)
         setTimeout(() => {
@@ -69,13 +70,7 @@ export function UsersActionDialog({ roles, currentRow, open, onOpenChange }: Pro
           clearErrors()
         }, 500)
         toast(t('users.action.toast.title'), {
-          description: (
-            <div className="mt-2 max-w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4">
-              <pre className="text-white whitespace-pre-wrap break-words">
-                <code>{JSON.stringify(data, null, 2)}</code>
-              </pre>
-            </div>
-          ),
+          description: isEdit ? data.email : data.fullName || data.email,
         })
       },
     })
@@ -86,10 +81,12 @@ export function UsersActionDialog({ roles, currentRow, open, onOpenChange }: Pro
       open={open}
       onOpenChange={(state) => {
         onOpenChange(state)
-        setTimeout(() => {
-          reset()
-          clearErrors()
-        }, 500)
+        if (!state) {
+          setTimeout(() => {
+            reset()
+            clearErrors()
+          }, 500)
+        }
       }}
     >
       <DialogContent className="sm:max-w-md">

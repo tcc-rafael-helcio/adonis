@@ -1,22 +1,23 @@
-import { useState } from 'react'
 import { useForm } from '@inertiajs/react'
+import { useState } from 'react'
 
 import { Trans } from 'react-i18next'
 
-import { AlertTriangleIcon } from 'lucide-react'
-import { toast } from '@workspace/ui/hooks/use-toast'
+import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
+import { useTranslation } from '#common/ui/hooks/use_translation'
+import { urlFor } from '~/app/client'
+
 import { Alert, AlertDescription, AlertTitle } from '@workspace/ui/components/alert'
 import { Input } from '@workspace/ui/components/input'
-import { useTranslation } from '#common/ui/hooks/use_translation'
+import { toast } from '@workspace/ui/hooks/use-toast'
+import { AlertTriangleIcon } from 'lucide-react'
 
-import { ConfirmDialog } from '#common/ui/components/confirm_dialog'
-
-import type UserDto from '#users/dtos/user'
+import type { Data } from '@generated/data'
 
 interface Props {
   open: boolean
   onOpenChange: (open: boolean) => void
-  currentRow: UserDto
+  currentRow: Data.Users.User
 }
 
 export function UsersDeleteDialog({ open, onOpenChange, currentRow }: Props) {
@@ -28,19 +29,12 @@ export function UsersDeleteDialog({ open, onOpenChange, currentRow }: Props) {
   const handleDelete = () => {
     if (value.trim() !== currentRow.email) return
 
-    destroy(`/users/${currentRow?.id}`, {
+    destroy(urlFor('users.destroy', { id: currentRow.id }), {
       preserveScroll: true,
-      preserveState: false,
       onSuccess: () => {
         onOpenChange(false)
         toast(t('users.delete.toast.title'), {
-          description: (
-            <div className="mt-2 max-w-[320px] overflow-x-auto rounded-md bg-slate-950 p-4">
-              <pre className="text-white whitespace-pre-wrap break-words">
-                <code>{JSON.stringify(currentRow, null, 2)}</code>
-              </pre>
-            </div>
-          ),
+          description: currentRow.email,
         })
       },
     })
