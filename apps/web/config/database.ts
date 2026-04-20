@@ -17,10 +17,10 @@ const dbConfig = defineConfig({
       },
       migrations: {
         naturalSort: true,
-        paths: ['app/users/database/migrations'],
+        paths: ['app/users/database/migrations', 'app/dataset/database/migrations'],
       },
       seeders: {
-        paths: ['app/users/database/seeders'],
+        paths: ['app/users/database/seeders', 'app/dataset/database/seeders'],
       },
       debug: app.inDev,
     },

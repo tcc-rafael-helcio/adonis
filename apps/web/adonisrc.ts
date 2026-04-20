@@ -93,6 +93,10 @@ export default defineConfig({
     () => import('#users/start/events'),
     () => import('#users/routes'),
 
+    //dataset
+    () => import('#app/dataset/start/view'),
+    () => import('#app/dataset/routes'),
+
     //analytics
     () => import('#analytics/routes'),
   ],

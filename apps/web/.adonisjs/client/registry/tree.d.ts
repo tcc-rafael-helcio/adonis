@@ -69,6 +69,14 @@ export interface ApiDefinition {
   appearance: {
     show: typeof routes['appearance.show']
   }
+  datasets: {
+    viewer: typeof routes['datasets.viewer']
+    version: {
+      store: typeof routes['datasets.version.store']
+    }
+    index: typeof routes['datasets.index']
+    store: typeof routes['datasets.store']
+  }
   dashboard: {
     show: typeof routes['dashboard.show']
   }

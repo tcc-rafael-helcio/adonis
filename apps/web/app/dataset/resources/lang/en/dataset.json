@@ -1,0 +1,87 @@
+{
+  "index": {
+    "page": {
+      "breadcrumbs": {
+        "dataset": "Dataset"
+      },
+      "title": "Upload dataset",
+      "description": "Send a CSV file and the server will store it locally as a dataset folder.",
+      "actions": {
+        "open_viewer": "Open dataset viewer"
+      },
+      "form": {
+        "title": "New dataset",
+        "intro": "The server will create the directory tree and generate the README file for the upload.",
+        "name": {
+          "label": "Dataset name",
+          "placeholder": "Dataset X"
+        },
+        "version": {
+          "label": "Version"
+        },
+        "file": {
+          "label": "CSV file"
+        },
+        "description": {
+          "label": "README notes",
+          "placeholder": "Short notes that will be written to README.md"
+        },
+        "actions": {
+          "submit": "Save dataset",
+          "saving": "Saving..."
+        },
+        "note": "Dataset names must be unique. To upload a new file for an existing dataset, use the dataset viewer update button. Files are stored under storage/datasets."
+      },
+      "side": {
+        "title": "Storage path",
+        "description": "Uploads are saved in a folder structure that matches the database document."
+      },
+      "list": {
+        "title": "Saved datasets",
+        "intro": "Simple view of datasets persisted in the database.",
+        "empty": "No datasets found yet.",
+        "dataset_id": "Dataset #{{ id }}",
+        "created_at": "Created at: {{ date }}",
+        "root_path": "Dataset root path",
+        "versions": "Versions",
+        "no_versions": "No versions linked to this dataset."
+      }
+    }
+  },
+  "view": {
+    "page": {
+      "breadcrumb": "Viewer",
+      "title": "Dataset viewer",
+      "description": "Preview dataset CSV content from local storage.",
+      "actions": {
+        "back_upload": "Back to upload",
+        "open_update": "Update this dataset",
+        "cancel_update": "Cancel update"
+      },
+      "update": {
+        "intro": "Upload a new CSV to create another version of the selected dataset.",
+        "version": {
+          "label": "Version name"
+        },
+        "file": {
+          "label": "CSV file"
+        },
+        "description": {
+          "label": "README notes",
+          "placeholder": "Short notes for this new version"
+        },
+        "actions": {
+          "submit": "Save version",
+          "saving": "Saving version..."
+        }
+      },
+      "datasets": "Datasets",
+      "versions": "Versions",
+      "preview_title": "Content preview",
+      "readme_title": "README preview",
+      "no_readme": "No README content available for this version.",
+      "no_content": "No CSV content available for preview.",
+      "empty": "No datasets found yet."
+    }
+  }
+}

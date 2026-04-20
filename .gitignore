@@ -37,3 +37,6 @@ npm-debug.log*
 
 # JetBrain IDEs
 .idea
+
+#storage
+storage

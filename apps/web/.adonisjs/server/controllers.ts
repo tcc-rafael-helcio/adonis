@@ -15,6 +15,9 @@ export const controllers = {
     SignUp: () => import('#app/auth/controllers/sign_up_controller'),
     Social: () => import('#app/auth/controllers/social_controller'),
   },
+  dataset: {
+    Datasets: () => import('#app/dataset/controllers/datasets_controller'),
+  },
   marketing: {
     Marketing: () => import('#app/marketing/controllers/marketing_controller'),
   },

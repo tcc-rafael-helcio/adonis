@@ -1,0 +1,87 @@
+{
+  "index": {
+    "page": {
+      "breadcrumbs": {
+        "dataset": "Jeu de donnees"
+      },
+      "title": "Envoyer un dataset",
+      "description": "Envoyez un fichier CSV et le serveur le stockera localement comme dossier dataset.",
+      "actions": {
+        "open_viewer": "Ouvrir le visualiseur de dataset"
+      },
+      "form": {
+        "title": "Nouveau dataset",
+        "intro": "Le serveur creera l'arborescence et generera le fichier README pour l'envoi.",
+        "name": {
+          "label": "Nom du dataset",
+          "placeholder": "Dataset X"
+        },
+        "version": {
+          "label": "Version"
+        },
+        "file": {
+          "label": "Fichier CSV"
+        },
+        "description": {
+          "label": "Notes du README",
+          "placeholder": "Courtes notes qui seront ecrites dans README.md"
+        },
+        "actions": {
+          "submit": "Enregistrer le dataset",
+          "saving": "Enregistrement..."
+        },
+        "note": "Les noms de dataset doivent etre uniques. Pour envoyer un nouveau fichier a un dataset existant, utilisez le bouton de mise a jour dans le visualiseur. Les fichiers sont stockes sous storage/datasets."
+      },
+      "side": {
+        "title": "Chemin de stockage",
+        "description": "Les envois suivent la structure de dossiers definie dans le document de base de donnees."
+      },
+      "list": {
+        "title": "Datasets enregistres",
+        "intro": "Vue simple des datasets persistes dans la base de donnees.",
+        "empty": "Aucun dataset trouve pour le moment.",
+        "dataset_id": "Dataset #{{ id }}",
+        "created_at": "Cree le: {{ date }}",
+        "root_path": "Chemin racine du dataset",
+        "versions": "Versions",
+        "no_versions": "Aucune version liee a ce dataset."
+      }
+    }
+  },
+  "view": {
+    "page": {
+      "breadcrumb": "Visualiseur",
+      "title": "Visualiseur de dataset",
+      "description": "Apercu du contenu CSV du dataset stocke localement.",
+      "actions": {
+        "back_upload": "Retour a l'envoi",
+        "open_update": "Mettre a jour ce dataset",
+        "cancel_update": "Annuler la mise a jour"
+      },
+      "update": {
+        "intro": "Envoyez un nouveau CSV pour creer une nouvelle version du dataset selectionne.",
+        "version": {
+          "label": "Nom de la version"
+        },
+        "file": {
+          "label": "Fichier CSV"
+        },
+        "description": {
+          "label": "Notes du README",
+          "placeholder": "Courtes notes pour cette nouvelle version"
+        },
+        "actions": {
+          "submit": "Enregistrer la version",
+          "saving": "Enregistrement de la version..."
+        }
+      },
+      "datasets": "Datasets",
+      "versions": "Versions",
+      "preview_title": "Apercu du contenu",
+      "readme_title": "Apercu du README",
+      "no_readme": "Aucun contenu README disponible pour cette version.",
+      "no_content": "Aucun contenu CSV disponible pour l'apercu.",
+      "empty": "Aucun dataset trouve pour le moment."
+    }
+  }
+}

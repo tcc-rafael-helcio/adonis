@@ -1,0 +1,87 @@
+{
+  "index": {
+    "page": {
+      "breadcrumbs": {
+        "dataset": "Conjunto de dados"
+      },
+      "title": "Enviar conjunto de dados",
+      "description": "Envie um CSV e o servidor vai armazenar localmente como uma pasta de dataset.",
+      "actions": {
+        "open_viewer": "Abrir visualizador de dataset"
+      },
+      "form": {
+        "title": "Novo dataset",
+        "intro": "O servidor criará a arvore de diretórios e gerará o README do envio.",
+        "name": {
+          "label": "Nome do dataset",
+          "placeholder": "Dataset X"
+        },
+        "version": {
+          "label": "Versao"
+        },
+        "file": {
+          "label": "Arquivo CSV"
+        },
+        "description": {
+          "label": "Observacoes do README",
+          "placeholder": "Notas curtas que serao gravadas em README.md"
+        },
+        "actions": {
+          "submit": "Salvar dataset",
+          "saving": "Salvando..."
+        },
+        "note": "Nomes de dataset devem ser unicos. Para enviar um novo arquivo para um dataset existente, use o botao de atualizacao no visualizador. Os arquivos ficam em storage/datasets."
+      },
+      "side": {
+        "title": "Caminho de armazenamento",
+        "description": "Os envios seguem a estrutura de pastas definida no documento de banco de dados."
+      },
+      "list": {
+        "title": "Datasets salvos",
+        "intro": "Visualizacao simples dos datasets persistidos no banco de dados.",
+        "empty": "Nenhum dataset encontrado ainda.",
+        "dataset_id": "Dataset #{{ id }}",
+        "created_at": "Criado em: {{ date }}",
+        "root_path": "Caminho raiz do dataset",
+        "versions": "Versoes",
+        "no_versions": "Nenhuma versao vinculada a este dataset."
+      }
+    }
+  },
+  "view": {
+    "page": {
+      "breadcrumb": "Visualizador",
+      "title": "Visualizador de dataset",
+      "description": "Visualize o conteudo CSV do dataset salvo localmente.",
+      "actions": {
+        "back_upload": "Voltar para envio",
+        "open_update": "Atualizar este dataset",
+        "cancel_update": "Cancelar atualizacao"
+      },
+      "update": {
+        "intro": "Envie um novo CSV para criar outra versao do dataset selecionado.",
+        "version": {
+          "label": "Nome da versao"
+        },
+        "file": {
+          "label": "Arquivo CSV"
+        },
+        "description": {
+          "label": "Observações do README",
+          "placeholder": "Notas curtas para esta nova versao"
+        },
+        "actions": {
+          "submit": "Salvar versão",
+          "saving": "Salvando versão..."
+        }
+      },
+      "datasets": "Datasets",
+      "versions": "Versoes",
+      "preview_title": "Prévia do conteudo",
+      "readme_title": "Prévia do README",
+      "no_readme": "Nenhum conteudo de README disponivel para esta versao.",
+      "no_content": "Nenhum conteudo CSV disponivel para visualizacao.",
+      "empty": "Nenhum dataset encontrado ainda."
+    }
+  }
+}

@@ -180,6 +180,30 @@ const routes = {
     tokens: [{"old":"/settings/appearance","type":0,"val":"settings","end":""},{"old":"/settings/appearance","type":0,"val":"appearance","end":""}],
     types: placeholder as Registry['appearance.show']['types'],
   },
+  'datasets.viewer': {
+    methods: ["GET","HEAD"],
+    pattern: '/datasets/view',
+    tokens: [{"old":"/datasets/view","type":0,"val":"datasets","end":""},{"old":"/datasets/view","type":0,"val":"view","end":""}],
+    types: placeholder as Registry['datasets.viewer']['types'],
+  },
+  'datasets.version.store': {
+    methods: ["POST"],
+    pattern: '/datasets/:id/version',
+    tokens: [{"old":"/datasets/:id/version","type":0,"val":"datasets","end":""},{"old":"/datasets/:id/version","type":1,"val":"id","end":""},{"old":"/datasets/:id/version","type":0,"val":"version","end":""}],
+    types: placeholder as Registry['datasets.version.store']['types'],
+  },
+  'datasets.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/datasets',
+    tokens: [{"old":"/datasets","type":0,"val":"datasets","end":""}],
+    types: placeholder as Registry['datasets.index']['types'],
+  },
+  'datasets.store': {
+    methods: ["POST"],
+    pattern: '/datasets',
+    tokens: [{"old":"/datasets","type":0,"val":"datasets","end":""}],
+    types: placeholder as Registry['datasets.store']['types'],
+  },
   'dashboard.show': {
     methods: ["GET","HEAD"],
     pattern: '/dashboard',

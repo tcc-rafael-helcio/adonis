@@ -33,6 +33,10 @@ export type ScannedRoutes = {
     'password.update': { paramsTuple?: []; params?: {} }
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
+    'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.version.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.index': { paramsTuple?: []; params?: {} }
+    'datasets.store': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
   }
   GET: {
@@ -50,6 +54,8 @@ export type ScannedRoutes = {
     'tokens.index': { paramsTuple?: []; params?: {} }
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
+    'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.index': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
   }
   HEAD: {
@@ -67,6 +73,8 @@ export type ScannedRoutes = {
     'tokens.index': { paramsTuple?: []; params?: {} }
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
+    'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.index': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
   }
   POST: {
@@ -80,6 +88,8 @@ export type ScannedRoutes = {
     'users.invite.handle': { paramsTuple?: []; params?: {} }
     'users.impersonate.handle': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tokens.store': { paramsTuple?: []; params?: {} }
+    'datasets.version.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.store': { paramsTuple?: []; params?: {} }
   }
   PUT: {
     'users.update': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }

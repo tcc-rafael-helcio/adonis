@@ -11,7 +11,7 @@ export default class UserSeeder extends BaseSeeder {
       {
         email: 'admin@repo.com',
         fullName: 'Administrador',
-        password: '123',
+        password: '123123123',
         roleId: Roles.ADMIN,
       },
     ])
