@@ -51,6 +51,7 @@ export default function ViewDatasetsPage({
   const successMessage = useFlashMessage('success')
   const errorMessage = useFlashMessage('error')
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false)
+  const [showAllColumns, setShowAllColumns] = useState(false)
 
   const selectedDataset =
     datasets.find((dataset) => String(dataset.id) === String(selectedDatasetId)) || null
@@ -273,6 +274,17 @@ export default function ViewDatasetsPage({
                     Download CSV
                   </a>
                 ) : null}
+                {previewHeaders.length > 5 ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllColumns((s) => !s)}
+                    className="inline-flex h-8 items-center rounded-md border px-3 text-xs"
+                  >
+                    {showAllColumns
+                      ? 'Mostrar menos colunas'
+                      : `Mostrar mais ${previewHeaders.length - 5} colunas`}
+                  </button>
+                ) : null}
               </div>
             ) : null}
 
@@ -281,28 +293,42 @@ export default function ViewDatasetsPage({
                 <table className="min-w-full border-collapse text-sm">
                   <thead className="bg-muted/40">
                     <tr>
-                      {previewHeaders.map((header, index) => (
-                        <th
-                          key={`${header}-${index}`}
-                          className="px-3 py-2 text-left font-medium"
-                        >
-                          {header}
-                        </th>
-                      ))}
+                      {(() => {
+                        const maxCols = 5
+                        const visibleHeaders = showAllColumns
+                          ? previewHeaders
+                          : previewHeaders.slice(0, maxCols)
+
+                        return visibleHeaders.map((header, index) => (
+                          <th
+                            key={`${header}-${index}`}
+                            className="px-3 py-2 text-left font-medium"
+                          >
+                            {header}
+                          </th>
+                        ))
+                      })()}
                     </tr>
                   </thead>
 
                   <tbody>
                     {previewRows.map((row, rowIndex) => (
                       <tr key={`row-${rowIndex}`} className="border-t">
-                        {previewHeaders.map((_, colIndex) => (
-                          <td
-                            key={`cell-${rowIndex}-${colIndex}`}
-                            className="px-3 py-2 align-top"
-                          >
-                            {row[colIndex] || ''}
-                          </td>
-                        ))}
+                        {(() => {
+                          const maxCols = 5
+                          const visibleCount = showAllColumns
+                            ? previewHeaders.length
+                            : Math.min(previewHeaders.length, maxCols)
+
+                          return Array.from({ length: visibleCount }).map((_, colIndex) => (
+                            <td
+                              key={`cell-${rowIndex}-${colIndex}`}
+                              className="px-3 py-2 align-top"
+                            >
+                              {row[colIndex] || ''}
+                            </td>
+                          ))
+                        })()}
                       </tr>
                     ))}
                   </tbody>
