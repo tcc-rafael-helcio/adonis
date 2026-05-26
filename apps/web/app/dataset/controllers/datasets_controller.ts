@@ -165,11 +165,16 @@ export default class DatasetsController {
         name: dataset.name,
         path: dataset.path,
         versions: await Promise.all(
-          dataset.versions.map(async (version) => ({
-            id: version.id,
-            name: version.name,
-            path: version.path ? await version.path.getUrl() : null,
-          }))
+          dataset.versions.map(async (version) => {
+            const url = version.path ? await version.path.getUrl() : null
+            const originalName = version.path && version.path.originalName ? version.path.originalName : null
+            return {
+              id: version.id,
+              name: version.name,
+              path: url,
+              originalName,
+            }
+          })
         ),
       }))
     )
