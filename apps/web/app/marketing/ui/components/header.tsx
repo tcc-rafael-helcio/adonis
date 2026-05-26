@@ -12,9 +12,8 @@ export default function HeaderSection() {
     <nav className="bg-background">
       <Container className="flex h-16 items-center justify-between">
         <div
-          className={`absolute top-0 left-0 w-full h-screen bg-background z-40 flex flex-col items-center gap-4 py-16 transition-all duration-300 ${
-            menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-          } md:hidden`}
+          className={`absolute top-0 left-0 w-full h-screen bg-background z-40 flex flex-col items-center gap-4 py-16 transition-all duration-300 ${menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+            } md:hidden`}
         >
           <div className="flex flex-col w-full pt-8 gap-4 px-6">
             <Link
