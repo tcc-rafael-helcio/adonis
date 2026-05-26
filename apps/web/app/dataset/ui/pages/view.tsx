@@ -45,6 +45,7 @@ export default function ViewDatasetsPage({
   previewError,
   readmeContent,
   readmeError,
+  user,
 }: PageProps) {
   const { t } = useTranslation()
   const successMessage = useFlashMessage('success')
@@ -52,11 +53,13 @@ export default function ViewDatasetsPage({
   const [isUpdateFormOpen, setIsUpdateFormOpen] = useState(false)
 
   const selectedDataset =
-    datasets.find((dataset) => dataset.id === selectedDatasetId) || null
+    datasets.find((dataset) => String(dataset.id) === String(selectedDatasetId)) || null
 
   const selectedVersion = selectedDataset
-    ? selectedDataset.versions.find((v) => v.id === selectedVersionId) || null
+    ? selectedDataset.versions.find((v) => String(v.id) === String(selectedVersionId)) || null
     : null
+
+
 
   return (
     <AppLayout
@@ -135,7 +138,8 @@ export default function ViewDatasetsPage({
                 {t('dataset.view.page.preview_title')}
               </h3>
 
-              {selectedDataset ? (
+
+              {selectedDataset && user && Number(selectedDataset.userId) === Number((user as any).id) ? (
                 <button
                   type="button"
                   onClick={() => setIsUpdateFormOpen((current) => !current)}

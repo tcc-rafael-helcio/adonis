@@ -43,7 +43,7 @@
         "dataset_id": "Dataset #{{ id }}",
         "created_at": "Criado em: {{ date }}",
         "root_path": "Caminho raiz do dataset",
-        "versions": "Versoes",
+        "versions": "Versões",
         "no_versions": "Nenhuma versao vinculada a este dataset."
       }
     }
@@ -76,7 +76,7 @@
         }
       },
       "datasets": "Datasets",
-      "versions": "Versoes",
+      "versions": "Versões",
       "preview_title": "Prévia do conteudo",
       "readme_title": "Prévia do README",
       "no_readme": "Nenhum conteudo de README disponivel para esta versao.",

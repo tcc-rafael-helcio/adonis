@@ -164,6 +164,7 @@ export default class DatasetsController {
         id: dataset.id,
         name: dataset.name,
         path: dataset.path,
+        userId: dataset.userId,
         versions: await Promise.all(
           dataset.versions.map(async (version) => {
             const url = version.path ? await version.path.getUrl() : null
@@ -179,6 +180,8 @@ export default class DatasetsController {
       }))
     )
 
+
+
     return inertia.render('dataset/view', {
       datasets: datasetsPayload,
       selectedDatasetId: selectedDataset ? selectedDataset.id : null,
@@ -193,10 +196,18 @@ export default class DatasetsController {
     })
   }
 
-  public async addVersion({ params, request, response, session }: HttpContext) {
+  public async addVersion({ params, request, response, session, auth }: HttpContext) {
     const dataset = await Dataset.query().where('id', params.id).preload('versions').firstOrFail()
+
+    // Authorization: only dataset owner can add versions
+    const currentUserId = auth?.user?.id
+    if (!currentUserId || Number(currentUserId) !== Number(dataset.userId)) {
+      session.flash('error', 'You are not authorized to update this dataset.')
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    }
     const payload = await request.validateUsing(addDatasetVersionValidator)
     const datasetFile = request.file('file')
+
 
     if (!datasetFile) {
       session.flash('error', 'Please select a CSV file to upload.')
