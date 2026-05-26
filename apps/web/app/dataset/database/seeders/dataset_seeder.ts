@@ -9,6 +9,7 @@ import { join } from 'node:path'
 import User from '#users/models/user'
 import Dataset from '#app/dataset/models/dataset'
 import DatasetVersion from '#app/dataset/models/dataset_version'
+import { attachmentManager } from '@jrmc/adonis-attachment'
 
 export default class DatasetSeeder extends BaseSeeder {
   async run() {
@@ -65,17 +66,20 @@ export default class DatasetSeeder extends BaseSeeder {
         .where('name', versionName)
         .first()
 
+      // create attachment from the csv file on disk
+      const fileAttachment = await attachmentManager.createFromPath(csvPath, csvFileName)
+
       if (!version) {
         await DatasetVersion.create(
           {
             datasetId: dataset.id,
             name: versionName,
-            path: csvPath,
+            path: fileAttachment,
           },
           { client: trx }
         )
       } else {
-        version.merge({ path: csvPath })
+        version.merge({ path: fileAttachment })
         await version.save()
       }
     })

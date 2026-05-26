@@ -44,7 +44,7 @@ export class DatasetVersionSchema extends BaseModel {
   @column()
   declare name: string
   @column()
-  declare path: string
+  declare path: any
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 }

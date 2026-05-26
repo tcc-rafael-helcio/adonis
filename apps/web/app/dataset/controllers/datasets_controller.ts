@@ -2,12 +2,13 @@ import type { HttpContext } from '@adonisjs/core/http'
 import app from '@adonisjs/core/services/app'
 import Database from '@adonisjs/lucid/services/db'
 
-import { mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 
 import Dataset from '../models/dataset.js'
 import DatasetVersion from '../models/dataset_version.js'
 import { addDatasetVersionValidator, createDatasetValidator } from '#app/dataset/validators'
+import { attachmentManager } from '@jrmc/adonis-attachment'
 
 function sanitizePathSegment(value: string) {
   return value
@@ -106,7 +107,7 @@ export default class DatasetsController {
     const selectedVersion = selectedDataset
       ? versionId
         ? selectedDataset.versions.find((version) => version.id === versionId) ||
-          selectedDataset.versions[0]
+        selectedDataset.versions[0]
         : selectedDataset.versions[0]
       : null
 
@@ -122,7 +123,8 @@ export default class DatasetsController {
 
     if (selectedVersion) {
       try {
-        const csvContent = await readFile(selectedVersion.path, 'utf8')
+        const buffer = await selectedVersion.path.getBuffer()
+        const csvContent = buffer.toString('utf8')
         const parsed = parseCsvPreview(csvContent)
         previewHeaders = parsed.headers
         previewRows = parsed.rows
@@ -131,28 +133,53 @@ export default class DatasetsController {
       }
 
       try {
-        const readmePath = join(dirname(selectedVersion.path), 'README.md')
-        readmeContent = await readFile(readmePath, 'utf8')
+        // First try README next to the dataset folder (used by seeder and older flow)
+        const dataset = selectedDataset
+        const candidate1 = dataset ? join(dataset.path, selectedVersion.name, 'README.md') : null
+
+        if (candidate1) {
+          try {
+            readmeContent = await readFile(candidate1, 'utf8')
+          } catch { }
+        }
+
+        // Fallback: try to read README next to the attachment file (if attachment exposes a path)
+        if (!readmeContent) {
+          try {
+            const attachPath = (selectedVersion.path && (selectedVersion.path.path || selectedVersion.path)) as string
+            const readmePath = join(dirname(attachPath), 'README.md')
+            readmeContent = await readFile(readmePath, 'utf8')
+          } catch { }
+        }
+
+        if (!readmeContent) {
+          readmeError = 'Unable to read README.md for this version.'
+        }
       } catch {
         readmeError = 'Unable to read README.md for this version.'
       }
     }
-
-    return inertia.render('dataset/view', {
-      datasets: datasets.map((dataset) => ({
+    const datasetsPayload = await Promise.all(
+      datasets.map(async (dataset) => ({
         id: dataset.id,
         name: dataset.name,
         path: dataset.path,
-        versions: dataset.versions.map((version) => ({
-          id: version.id,
-          name: version.name,
-          path: version.path,
-        })),
-      })),
+        versions: await Promise.all(
+          dataset.versions.map(async (version) => ({
+            id: version.id,
+            name: version.name,
+            path: version.path ? await version.path.getUrl() : null,
+          }))
+        ),
+      }))
+    )
+
+    return inertia.render('dataset/view', {
+      datasets: datasetsPayload,
       selectedDatasetId: selectedDataset ? selectedDataset.id : null,
       selectedVersionId: selectedVersion ? selectedVersion.id : null,
       suggestedVersionName,
-      previewPath: selectedVersion ? selectedVersion.path : null,
+      previewPath: selectedVersion ? (await selectedVersion.path.getUrl()) : null,
       previewHeaders,
       previewRows,
       previewError,
@@ -185,26 +212,19 @@ export default class DatasetsController {
     }
 
     const fileName = sanitizeFileName(datasetFile.clientName)
-    const versionPath = join(dataset.path, versionName)
-    const readmePath = join(versionPath, 'README.md')
-    const filePath = join(versionPath, fileName)
-
-    await mkdir(versionPath, { recursive: true })
-
     try {
-      await datasetFile.move(versionPath, {
-        name: fileName,
-        overwrite: true,
-      })
+      const attachment = await attachmentManager.createFromFile(datasetFile)
 
+      // Ensure a consistent README location under storage/datasets/<dataset>/<version>
+      const rootPath = app.makePath('storage/datasets')
+      const versionPath = join(dataset.path || rootPath, versionName)
+      await mkdir(versionPath, { recursive: true })
+
+      const readmePath = join(versionPath, 'README.md')
       const readmeLines = [
         `# ${dataset.name}`,
         '',
-        `Version: ${versionName}`,
-        '',
         payload.description ? payload.description : 'No description provided.',
-        '',
-        `Source file: ${fileName}`,
       ]
 
       await writeFile(readmePath, `${readmeLines.join('\n')}\n`, 'utf8')
@@ -212,15 +232,15 @@ export default class DatasetsController {
       const version = await DatasetVersion.create({
         datasetId: dataset.id,
         name: versionName,
-        path: filePath,
+        path: attachment,
       })
 
       session.flash('success', `Version ${versionName} saved successfully.`)
 
       return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}&versionId=${version.id}`)
-    } catch {
-      await rm(versionPath, { recursive: true, force: true })
-      session.flash('error', 'Unable to save the dataset version. Please try again.')
+    } catch (err) {
+      console.error('Error saving dataset version (addVersion):', err)
+      session.flash('error', `Unable to save the dataset version. ${err && err.message ? err.message : ''}`)
       return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
     }
   }
@@ -237,28 +257,20 @@ export default class DatasetsController {
     const datasetName = sanitizePathSegment(payload.name)
     const versionName = sanitizePathSegment(payload.version || 'V1')
     const fileName = sanitizeFileName(datasetFile.clientName)
-    const rootPath = app.makePath('storage/datasets')
-    const datasetPath = join(rootPath, datasetName)
-    const versionPath = join(datasetPath, versionName)
-    const readmePath = join(versionPath, 'README.md')
-    const filePath = join(versionPath, fileName)
-
-    await mkdir(versionPath, { recursive: true })
 
     try {
-      await datasetFile.move(versionPath, {
-        name: fileName,
-        overwrite: true,
-      })
+      const attachment = await attachmentManager.createFromFile(datasetFile)
 
+      const rootPath = app.makePath('storage/datasets')
+      const datasetPath = join(rootPath, datasetName)
+      const versionPath = join(datasetPath, versionName)
+      await mkdir(versionPath, { recursive: true })
+
+      const readmePath = join(versionPath, 'README.md')
       const readmeLines = [
         `# ${payload.name}`,
         '',
-        `Version: ${payload.version || 'V1'}`,
-        '',
         payload.description ? payload.description : 'No description provided.',
-        '',
-        `Source file: ${fileName}`,
       ]
 
       await writeFile(readmePath, `${readmeLines.join('\n')}\n`, 'utf8')
@@ -278,18 +290,18 @@ export default class DatasetsController {
           {
             datasetId: dataset.id,
             name: versionName,
-            path: filePath,
+            path: attachment,
           },
           { client: trx }
         )
       })
 
-      session.flash('success', `Dataset saved locally at ${filePath}`)
+      session.flash('success', `Dataset saved successfully`)
 
       return response.redirect().back()
-    } catch {
-      await rm(datasetPath, { recursive: true, force: true })
-      session.flash('error', 'Unable to save the dataset. Please try again.')
+    } catch (err) {
+      console.error('Error saving dataset (store):', err)
+      session.flash('error', `Unable to save the dataset. ${err && err.message ? err.message : ''}`)
       return response.redirect().back()
     }
   }
