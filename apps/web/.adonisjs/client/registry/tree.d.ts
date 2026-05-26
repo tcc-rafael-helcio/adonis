@@ -71,8 +71,10 @@ export interface ApiDefinition {
   }
   datasets: {
     viewer: typeof routes['datasets.viewer']
+    privacy: typeof routes['datasets.privacy']
     version: {
       store: typeof routes['datasets.version.store']
+      download: typeof routes['datasets.version.download']
     }
     index: typeof routes['datasets.index']
     store: typeof routes['datasets.store']

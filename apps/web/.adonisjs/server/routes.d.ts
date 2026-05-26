@@ -34,7 +34,9 @@ export type ScannedRoutes = {
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
     'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.privacy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.version.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
+    'datasets.version.download': { paramsTuple: [ParamValue,ParamValue]; params: {'datasetId': ParamValue,'versionId': ParamValue} }
     'datasets.index': { paramsTuple?: []; params?: {} }
     'datasets.store': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
@@ -55,6 +57,7 @@ export type ScannedRoutes = {
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
     'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.version.download': { paramsTuple: [ParamValue,ParamValue]; params: {'datasetId': ParamValue,'versionId': ParamValue} }
     'datasets.index': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
   }
@@ -74,6 +77,7 @@ export type ScannedRoutes = {
     'password.show': { paramsTuple?: []; params?: {} }
     'appearance.show': { paramsTuple?: []; params?: {} }
     'datasets.viewer': { paramsTuple?: []; params?: {} }
+    'datasets.version.download': { paramsTuple: [ParamValue,ParamValue]; params: {'datasetId': ParamValue,'versionId': ParamValue} }
     'datasets.index': { paramsTuple?: []; params?: {} }
     'dashboard.show': { paramsTuple?: []; params?: {} }
   }
@@ -88,6 +92,7 @@ export type ScannedRoutes = {
     'users.invite.handle': { paramsTuple?: []; params?: {} }
     'users.impersonate.handle': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'tokens.store': { paramsTuple?: []; params?: {} }
+    'datasets.privacy': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.version.store': { paramsTuple: [ParamValue]; params: {'id': ParamValue} }
     'datasets.store': { paramsTuple?: []; params?: {} }
   }

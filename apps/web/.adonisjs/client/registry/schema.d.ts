@@ -367,6 +367,18 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['viewer']>>>
     }
   }
+  'datasets.privacy': {
+    methods: ["POST"]
+    pattern: '/datasets/:id/privacy'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { id: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['togglePrivacy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['togglePrivacy']>>>
+    }
+  }
   'datasets.version.store': {
     methods: ["POST"]
     pattern: '/datasets/:id/version'
@@ -377,6 +389,18 @@ export interface Registry {
       query: ExtractQuery<InferInput<(typeof import('#app/dataset/validators').addDatasetVersionValidator)>>
       response: ExtractResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['addVersion']>>>
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['addVersion']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'datasets.version.download': {
+    methods: ["GET","HEAD"]
+    pattern: '/datasets/:datasetId/version/:versionId/download'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue, ParamValue]
+      params: { datasetId: ParamValue; versionId: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['downloadVersion']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#app/dataset/controllers/datasets_controller').default['downloadVersion']>>>
     }
   }
   'datasets.index': {

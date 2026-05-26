@@ -90,12 +90,24 @@ export default class DatasetsController {
     return inertia.render('dataset/index', {})
   }
 
-  public async viewer({ inertia, request }: HttpContext) {
-    const datasets = await Dataset.query()
+  public async viewer({ inertia, request, auth }: HttpContext) {
+    const currentUserId = auth?.user?.id ?? null
+
+    let datasetsQuery = Dataset.query()
       .preload('versions', (query) => {
         query.orderBy('id', 'desc')
       })
       .orderBy('id', 'desc')
+
+    if (currentUserId) {
+      datasetsQuery = datasetsQuery.where((q) => {
+        q.where('is_public', true).orWhere('user_id', currentUserId)
+      })
+    } else {
+      datasetsQuery = datasetsQuery.where('is_public', true)
+    }
+
+    const datasets = await datasetsQuery
 
     const datasetId = Number(request.input('datasetId')) || null
     const versionId = Number(request.input('versionId')) || null
@@ -164,6 +176,7 @@ export default class DatasetsController {
         id: dataset.id,
         name: dataset.name,
         path: dataset.path,
+        isPublic: dataset.isPublic,
         userId: dataset.userId,
         versions: await Promise.all(
           dataset.versions.map(async (version) => {
@@ -261,6 +274,60 @@ export default class DatasetsController {
     }
   }
 
+  public async togglePrivacy({ params, request, response, session, auth }: HttpContext) {
+    const dataset = await Dataset.findOrFail(params.id)
+
+    const currentUserId = auth?.user?.id
+    if (!currentUserId || Number(currentUserId) !== Number(dataset.userId)) {
+      session.flash('error', 'You are not authorized to change dataset privacy.')
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    }
+
+    try {
+      // Accept explicit isPublic value or toggle when not provided
+      const bodyVal = request.input('isPublic')
+      if (typeof bodyVal === 'undefined') {
+        dataset.isPublic = !dataset.isPublic
+      } else {
+        dataset.isPublic = Boolean(bodyVal)
+      }
+
+      await dataset.save()
+      session.flash('success', `Dataset privacy updated.`)
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    } catch (err) {
+      session.flash('error', `Unable to update privacy. ${err && err.message ? err.message : ''}`)
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    }
+  }
+
+  public async downloadVersion({ params, response, auth, session }: HttpContext) {
+    const datasetId = Number(params.datasetId)
+    const versionId = Number(params.versionId)
+
+    const dataset = await Dataset.query().where('id', datasetId).firstOrFail()
+    const version = await DatasetVersion.query().where('id', versionId).where('dataset_id', datasetId).firstOrFail()
+
+    const currentUserId = auth?.user?.id ?? null
+    if (!dataset.isPublic && Number(currentUserId) !== Number(dataset.userId)) {
+      session.flash('error', 'You are not authorized to download this dataset.')
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    }
+
+    try {
+      const buffer = await version.path.getBuffer()
+      const originalName = version.path && (version.path.originalName || null)
+      const filename = originalName || `${dataset.name}.csv`
+
+      response.header('Content-Type', 'text/csv')
+      response.header('Content-Disposition', `attachment; filename="${filename.replace(/\"/g, '')}"`)
+      return response.send(buffer)
+    } catch (err) {
+      session.flash('error', 'Unable to download file.')
+      return response.redirect().toPath(`/datasets/view?datasetId=${dataset.id}`)
+    }
+  }
+
   public async store({ auth, request, response, session }: HttpContext) {
     const payload = await request.validateUsing(createDatasetValidator)
     const datasetFile = request.file('file')
@@ -296,7 +363,7 @@ export default class DatasetsController {
           {
             name: payload.name,
             path: datasetPath,
-            isPublic: false,
+            isPublic: payload.isPublic ? true : false,
             userId: auth.user!.id,
           },
           { client: trx }

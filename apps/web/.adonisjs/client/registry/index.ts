@@ -186,11 +186,23 @@ const routes = {
     tokens: [{"old":"/datasets/view","type":0,"val":"datasets","end":""},{"old":"/datasets/view","type":0,"val":"view","end":""}],
     types: placeholder as Registry['datasets.viewer']['types'],
   },
+  'datasets.privacy': {
+    methods: ["POST"],
+    pattern: '/datasets/:id/privacy',
+    tokens: [{"old":"/datasets/:id/privacy","type":0,"val":"datasets","end":""},{"old":"/datasets/:id/privacy","type":1,"val":"id","end":""},{"old":"/datasets/:id/privacy","type":0,"val":"privacy","end":""}],
+    types: placeholder as Registry['datasets.privacy']['types'],
+  },
   'datasets.version.store': {
     methods: ["POST"],
     pattern: '/datasets/:id/version',
     tokens: [{"old":"/datasets/:id/version","type":0,"val":"datasets","end":""},{"old":"/datasets/:id/version","type":1,"val":"id","end":""},{"old":"/datasets/:id/version","type":0,"val":"version","end":""}],
     types: placeholder as Registry['datasets.version.store']['types'],
+  },
+  'datasets.version.download': {
+    methods: ["GET","HEAD"],
+    pattern: '/datasets/:datasetId/version/:versionId/download',
+    tokens: [{"old":"/datasets/:datasetId/version/:versionId/download","type":0,"val":"datasets","end":""},{"old":"/datasets/:datasetId/version/:versionId/download","type":1,"val":"datasetId","end":""},{"old":"/datasets/:datasetId/version/:versionId/download","type":0,"val":"version","end":""},{"old":"/datasets/:datasetId/version/:versionId/download","type":1,"val":"versionId","end":""},{"old":"/datasets/:datasetId/version/:versionId/download","type":0,"val":"download","end":""}],
+    types: placeholder as Registry['datasets.version.download']['types'],
   },
   'datasets.index': {
     methods: ["GET","HEAD"],

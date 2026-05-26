@@ -17,9 +17,18 @@ router
   .as('datasets.viewer')
 
 router
+  .post('/datasets/:id/privacy', [DatasetsController, 'togglePrivacy'])
+  .middleware(middleware.auth())
+  .as('datasets.privacy');
+
+router
   .post('/datasets/:id/version', [DatasetsController, 'addVersion'])
   .middleware(middleware.auth())
-  .as('datasets.version.store')
+  .as('datasets.version.store');
+
+router
+  .get('/datasets/:datasetId/version/:versionId/download', [DatasetsController, 'downloadVersion'])
+  .as('datasets.version.download')
 
 router
   .resource('/datasets', DatasetsController)

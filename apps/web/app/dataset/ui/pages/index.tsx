@@ -12,7 +12,7 @@ import { useTranslation } from '#common/ui/hooks/use_translation'
 type PageProps = InertiaProps<{
 }>
 
-export default function ListDatasetsPage({}: PageProps) {
+export default function ListDatasetsPage({ }: PageProps) {
   const { t } = useTranslation()
   const successMessage = useFlashMessage('success')
   const errorMessage = useFlashMessage('error')
@@ -94,6 +94,24 @@ export default function ListDatasetsPage({}: PageProps) {
                       <FieldError />
                     </Field>
                   </div>
+
+                  <Field name="isPublic">
+                    <label className="inline-flex items-center cursor-pointer">
+                      <input
+                        name="isPublic"
+                        type="checkbox"
+                        value="true"
+                        className="sr-only peer"
+                      />
+
+                      <div className="w-11 h-6 bg-muted rounded-full peer-checked:bg-primary relative transition-colors">
+                        <span className="absolute left-1 top-1 w-4 h-4 bg-card rounded-full shadow transition-transform peer-checked:translate-x-5" />
+                      </div>
+
+                      <span className="ml-3 text-sm">Tornar público</span>
+                    </label>
+                    <FieldError />
+                  </Field>
 
                   <Field name="description">
                     <label className="grid gap-2">

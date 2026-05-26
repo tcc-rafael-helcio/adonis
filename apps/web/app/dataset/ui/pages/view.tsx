@@ -1,5 +1,6 @@
 import { Link } from '@adonisjs/inertia/react'
 import { useState } from 'react'
+import { router } from '@inertiajs/react'
 
 import type { InertiaProps } from '#core/ui/types'
 import { Field, FieldError, Form } from '#common/ui/components/form'
@@ -16,6 +17,7 @@ type PageProps = InertiaProps<{
     id: number
     name: string
     path: string
+    isPublic: boolean
     versions: {
       id: number
       name: string
@@ -151,6 +153,28 @@ export default function ViewDatasetsPage({
                     : t('dataset.view.page.actions.open_update')}
                 </button>
               ) : null}
+              {selectedDataset && user && Number(selectedDataset.userId) === Number((user as any).id) ? (
+                <div>
+                  <label className="inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="sr-only peer"
+                      defaultChecked={selectedDataset.isPublic}
+                      onChange={(e) =>
+                        router.post(`/datasets/${selectedDataset.id}/privacy`, { isPublic: e.target.checked })
+                      }
+                    />
+
+                    <div className="w-11 h-6 bg-muted rounded-full peer-checked:bg-primary relative transition-colors">
+                      <span className="absolute left-1 top-1 w-4 h-4 bg-card rounded-full shadow transition-transform peer-checked:translate-x-5" />
+                    </div>
+
+                    <span className="ml-3 text-sm">
+                      {selectedDataset.isPublic ? 'Público' : 'Privado'}
+                    </span>
+                  </label>
+                </div>
+              ) : null}
             </div>
 
             {isUpdateFormOpen && selectedDataset ? (
@@ -260,15 +284,9 @@ export default function ViewDatasetsPage({
                   {previewPath}
                 </p>
 
-                {selectedDataset ? (
+                {selectedDataset && selectedVersion ? (
                   <a
-                    href={previewPath}
-                    download={
-                      selectedVersion?.originalName ||
-                      `${selectedDataset.name}.csv`
-                    }
-                    target="_blank"
-                    rel="noreferrer"
+                    href={`/datasets/${selectedDataset.id}/version/${selectedVersion.id}/download`}
                     className="inline-flex h-8 items-center rounded-md border px-3 text-xs"
                   >
                     Download CSV
